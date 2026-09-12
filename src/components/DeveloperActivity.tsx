@@ -21,55 +21,6 @@ export default function DeveloperActivity() {
         <div className="mt-6">
           <LeetCodeStats />
         </div>
-
-        {/* External links */}
-        <div className="mt-6 grid gap-5 md:grid-cols-2">
-          <a
-            href={profile.links.github}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-2xl border border-zinc-800 p-6 transition hover:border-zinc-600"
-          >
-            <p className="font-mono text-sm text-zinc-600">
-              github.com
-            </p>
-
-            <h3 className="mt-3 text-xl font-semibold">
-              GitHub
-            </h3>
-
-            <p className="mt-3 text-zinc-500">
-              Explore my repositories and open-source work.
-            </p>
-
-            <span className="mt-6 inline-block text-sm text-zinc-300">
-              View GitHub ↗
-            </span>
-          </a>
-
-          <a
-            href={profile.links.leetcode}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-2xl border border-zinc-800 p-6 transition hover:border-zinc-600"
-          >
-            <p className="font-mono text-sm text-zinc-600">
-              leetcode.com
-            </p>
-
-            <h3 className="mt-3 text-xl font-semibold">
-              LeetCode
-            </h3>
-
-            <p className="mt-3 text-zinc-500">
-              View my problem-solving progress and profile.
-            </p>
-
-            <span className="mt-6 inline-block text-sm text-zinc-300">
-              View LeetCode ↗
-            </span>
-          </a>
-        </div>
       </div>
     </section>
   );

@@ -31,7 +31,7 @@ export default async function ProjectPage({
       <div className="mx-auto max-w-5xl px-6 py-12">
         {/* Back */}
         <a
-          href="/#projects"
+          href="/projects"
           className="font-mono text-sm text-zinc-600 transition hover:text-zinc-300"
         >
           ← Back to projects
