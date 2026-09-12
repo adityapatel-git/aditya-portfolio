@@ -4,7 +4,7 @@ import LeetCodeStats from "./LeetCodeStats";
 
 export default function DeveloperActivity() {
   return (
-    <section className="border-t border-white/5">
+    <section id="developerActivity" className="border-t border-white/5">
       <div className="mx-auto max-w-6xl px-6 py-24">
         <p className="mb-2 text-sm font-medium uppercase tracking-[0.2em] text-zinc-500">
           04 / Developer Activity

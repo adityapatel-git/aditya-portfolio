@@ -23,6 +23,10 @@ export default function Navbar() {
             Projects
           </a>
 
+          <a href="#developerActivity" className="transition hover:text-white">
+            Dev Profile
+          </a>
+
           <a href="#education" className="transition hover:text-white">
             Education
           </a>
