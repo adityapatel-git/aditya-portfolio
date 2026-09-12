@@ -5,88 +5,65 @@ export default async function LeetCodeStats() {
 
   const stats = profile.submitStats.acSubmissionNum;
 
-  const all = stats.find(
-    (item) => item.difficulty === "All",
-  );
-
-  const easy = stats.find(
-    (item) => item.difficulty === "Easy",
-  );
-
-  const medium = stats.find(
-    (item) => item.difficulty === "Medium",
-  );
-
-  const hard = stats.find(
-    (item) => item.difficulty === "Hard",
-  );
+  const all = stats.find((item) => item.difficulty === "All");
+  const easy = stats.find((item) => item.difficulty === "Easy");
+  const medium = stats.find((item) => item.difficulty === "Medium");
+  const hard = stats.find((item) => item.difficulty === "Hard");
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6">
-      <div className="flex items-start justify-between gap-4">
+    <div className="border-t border-white/10 pt-10">
+      {/* Header */}
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="font-mono text-xs text-zinc-600">
-            leetcode.stats()
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-600">
+            leetcode.stats
           </p>
 
-          <h3 className="mt-2 text-2xl font-semibold">
-            LeetCode
+          <h3 className="mt-2 text-2xl font-semibold tracking-tight">
+            Problem solving
           </h3>
-
-          <p className="mt-1 text-sm text-zinc-500">
-            @{profile.username}
-          </p>
         </div>
 
         <a
           href={`https://leetcode.com/u/${profile.username}/`}
           target="_blank"
           rel="noreferrer"
-          className="text-sm text-zinc-500 hover:text-white"
+          className="group flex w-fit items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
         >
-          Profile ↗
+          @{profile.username}
+
+          <span className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+            ↗
+          </span>
         </a>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat
-          label="Solved"
-          value={all?.count ?? 0}
-        />
-
-        <Stat
-          label="Easy"
-          value={easy?.count ?? 0}
-        />
-
-        <Stat
-          label="Medium"
-          value={medium?.count ?? 0}
-        />
-
-        <Stat
-          label="Hard"
-          value={hard?.count ?? 0}
-        />
+      {/* Main stats */}
+      <div className="mt-8 grid grid-cols-2 border-y border-white/10 sm:grid-cols-4">
+        <Stat label="Solved" value={all?.count ?? 0} />
+        <Stat label="Easy" value={easy?.count ?? 0} />
+        <Stat label="Medium" value={medium?.count ?? 0} />
+        <Stat label="Hard" value={hard?.count ?? 0} />
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border border-zinc-800 p-4">
-          <p className="text-xs text-zinc-600">
+      {/* Additional stats */}
+      <div className="grid sm:grid-cols-2">
+        <div className="border-b border-white/5 py-5 sm:border-b-0 sm:border-r sm:pr-6">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-zinc-700">
             Global ranking
           </p>
 
-          <p className="mt-2 text-xl font-semibold">
+          <p className="mt-2 text-xl font-semibold text-zinc-300">
             #{profile.profile.ranking.toLocaleString()}
           </p>
         </div>
 
-        <div className="rounded-xl border border-zinc-800 p-4">
-          <p className="text-xs text-zinc-600">
+        <div className="py-5 sm:pl-6">
+          <p className="font-mono text-[10px] uppercase tracking-wider text-zinc-700">
             Reputation
           </p>
 
-          <p className="mt-2 text-xl font-semibold">
+          <p className="mt-2 text-xl font-semibold text-zinc-300">
             {profile.profile.reputation.toLocaleString()}
           </p>
         </div>
@@ -103,12 +80,12 @@ function Stat({
   value: number;
 }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/50 p-4">
-      <p className="text-xs text-zinc-600">
+    <div className="border-b border-white/5 py-5 first:pr-4 sm:border-b-0 sm:border-r sm:px-5 sm:first:pl-0">
+      <p className="font-mono text-[10px] uppercase tracking-wider text-zinc-700">
         {label}
       </p>
 
-      <p className="mt-2 text-2xl font-semibold">
+      <p className="mt-2 text-2xl font-semibold tracking-tight text-zinc-200">
         {value}
       </p>
     </div>
