@@ -47,6 +47,7 @@ export default async function GithubStats() {
           className="group flex w-fit items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
         >
           @{profile.login}
+
           <span className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
             ↗
           </span>
@@ -83,13 +84,15 @@ export default async function GithubStats() {
             {contributions.totalContributions} contributions
           </p>
 
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-zinc-700">
+          {/* GitHub-style legend */}
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-zinc-500">
             <span>Less</span>
 
-            <span className="h-2.5 w-2.5 rounded-sm bg-zinc-900" />
-            <span className="h-2.5 w-2.5 rounded-sm bg-zinc-700" />
-            <span className="h-2.5 w-2.5 rounded-sm bg-zinc-500" />
-            <span className="h-2.5 w-2.5 rounded-sm bg-zinc-300" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-[#161b22]" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-[#0e4429]" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-[#006d32]" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-[#26a641]" />
+            <span className="h-2.5 w-2.5 rounded-sm bg-[#39d353]" />
 
             <span>More</span>
           </div>
@@ -161,18 +164,18 @@ function Stat({
 function getContributionClass(level: string) {
   switch (level) {
     case "FIRST_QUARTILE":
-      return "bg-zinc-800";
+      return "bg-[#0e4429]";
 
     case "SECOND_QUARTILE":
-      return "bg-zinc-600";
+      return "bg-[#006d32]";
 
     case "THIRD_QUARTILE":
-      return "bg-zinc-400";
+      return "bg-[#26a641]";
 
     case "FOURTH_QUARTILE":
-      return "bg-zinc-200";
+      return "bg-[#39d353]";
 
     default:
-      return "bg-zinc-900";
+      return "bg-[#161b22]";
   }
 }
