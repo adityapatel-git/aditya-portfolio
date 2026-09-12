@@ -3,37 +3,14 @@ import { profile } from "@/data/profile";
 export default function Footer() {
   return (
     <footer className="border-t border-white/5">
-      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-4 px-6 py-8 text-sm text-zinc-600 sm:flex-row">
-        <p>© {new Date().getFullYear()} Aditya Patel</p>
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+        <p className="text-xs text-zinc-600">
+          {profile.name}
+        </p>
 
-        <div className="flex gap-5">
-          <a
-            href={profile.links.github}
-            target="_blank"
-            rel="noreferrer"
-            className="transition hover:text-zinc-300"
-          >
-            GitHub
-          </a>
-
-          <a
-            href={profile.links.linkedin}
-            target="_blank"
-            rel="noreferrer"
-            className="transition hover:text-zinc-300"
-          >
-            LinkedIn
-          </a>
-
-          <a
-            href={profile.links.leetcode}
-            target="_blank"
-            rel="noreferrer"
-            className="transition hover:text-zinc-300"
-          >
-            LeetCode
-          </a>
-        </div>
+        <p className="font-mono text-[10px] uppercase tracking-wider text-zinc-700">
+          © {new Date().getFullYear()}
+        </p>
       </div>
     </footer>
   );
