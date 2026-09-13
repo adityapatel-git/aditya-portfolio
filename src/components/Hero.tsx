@@ -1,6 +1,8 @@
 import { profile } from "@/data/profile";
 
 export default function Hero() {
+  const resumeUrl =
+    "https://drive.google.com/uc?export=download&id=1bp7P6v5L1UzoswQOWSEChSz1ftwV7uaZ";
   return (
     <section className="relative isolate flex min-h-[100svh] snap-start items-center overflow-hidden">
       {/* Subtle grid */}
@@ -71,6 +73,17 @@ export default function Hero() {
               </span>
             </a>
 
+
+            <a
+              href="https://drive.google.com/uc?export=download&id=1bp7P6v5L1UzoswQOWSEChSz1ftwV7uaZ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
+            >
+              Download resume <span className="transition-transform duration-200 group-hover:translate-y-0.5">
+                ↓
+              </span>
+            </a>
 
           </div>
 
