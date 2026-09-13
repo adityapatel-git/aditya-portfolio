@@ -14,6 +14,7 @@ type Profile = {
     github: string | null;
     linkedin: string | null;
     leetcode: string | null;
+    resume_url: string | null;
 };
 
 export default function ProfileEditor({
@@ -31,6 +32,7 @@ export default function ProfileEditor({
         github: profile.github ?? "",
         linkedin: profile.linkedin ?? "",
         leetcode: profile.leetcode ?? "",
+        resume_url: profile.resume_url ?? "",
     });
 
     const [saving, setSaving] = useState(false);
@@ -65,6 +67,7 @@ export default function ProfileEditor({
                 github: form.github || null,
                 linkedin: form.linkedin || null,
                 leetcode: form.leetcode || null,
+                resume_url: form.resume_url || null,
             })
             .eq("id", profile.id);
 
@@ -143,6 +146,13 @@ export default function ProfileEditor({
                 placeholder="https://leetcode.com/u/..."
             />
 
+            <Field
+                label="Resume URL"
+                value={form.resume_url}
+                onChange={(value) => updateField("resume_url", value)}
+                placeholder="https://drive.google.com/..."
+            />
+
             <div className="flex items-center justify-between border-t border-white/10 pt-6">
                 <p
                     className={`text-sm ${message.startsWith("Error")
@@ -152,7 +162,6 @@ export default function ProfileEditor({
                 >
                     {message}
                 </p>
-
 
                 <button
                     type="submit"

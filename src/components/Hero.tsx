@@ -1,8 +1,23 @@
-import { profile } from "@/data/profile";
+"use client";
 
-export default function Hero() {
-  const resumeUrl =
-    "https://drive.google.com/uc?export=download&id=1bp7P6v5L1UzoswQOWSEChSz1ftwV7uaZ";
+type HeroProps = {
+  name?: string | null;
+  handle?: string | null;
+  location?: string | null;
+  github?: string | null;
+  linkedin?: string | null;
+  leetcode?: string | null;
+  resumeUrl?: string | null;
+};
+
+export default function Hero({
+  handle,
+  location,
+  github,
+  linkedin,
+  leetcode,
+  resumeUrl,
+}: HeroProps) {
   return (
     <section className="relative isolate flex min-h-[100svh] snap-start items-center overflow-hidden">
       {/* Subtle grid */}
@@ -22,12 +37,12 @@ export default function Hero() {
 
       <div className="mx-auto w-full max-w-6xl px-6 pb-20 pt-32">
         <div className="max-w-5xl">
-
-          {/* Main heading */}
           <h1 className="text-5xl font-bold leading-[1.05] tracking-[-0.04em] sm:text-7xl lg:text-8xl">
             Building systems
             <br />
-            <span className="text-zinc-500">that solve problems.</span>
+            <span className="text-zinc-500">
+              that solve problems.
+            </span>
           </h1>
 
           <div className="mb-8 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
@@ -37,63 +52,70 @@ export default function Hero() {
 
           {/* Actions */}
           <div className="mt-10 flex flex-wrap items-center gap-3">
-            <a
-              href={profile.links.github}
-              target="_blank"
-              rel="noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
-            >
-              GitHub
-              <span className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-                ↗
-              </span>
-            </a>
+            {github && (
+              <a
+                href={github}
+                target="_blank"
+                rel="noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
+              >
+                GitHub
+                <span className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                  ↗
+                </span>
+              </a>
+            )}
 
-            <a
-              href={profile.links.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
-            >
-              LinkedIn
-              <span className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-                ↗
-              </span>
-            </a>
+            {linkedin && (
+              <a
+                href={linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
+              >
+                LinkedIn
+                <span className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                  ↗
+                </span>
+              </a>
+            )}
 
-            <a
-              href={profile.links.leetcode}
-              target="_blank"
-              rel="noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
-            >
-              LeetCode
-              <span className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
-                ↗
-              </span>
-            </a>
+            {leetcode && (
+              <a
+                href={leetcode}
+                target="_blank"
+                rel="noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
+              >
+                LeetCode
+                <span className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                  ↗
+                </span>
+              </a>
+            )}
 
-
-            <a
-              href="https://drive.google.com/uc?export=download&id=1bp7P6v5L1UzoswQOWSEChSz1ftwV7uaZ"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
-            >
-              Download resume <span className="transition-transform duration-200 group-hover:translate-y-0.5">
-                ↓
-              </span>
-            </a>
-
+            {resumeUrl && (
+              <a
+                href={resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition duration-200 hover:border-zinc-400 hover:bg-white/[0.04]"
+              >
+                Download resume
+                <span className="transition-transform duration-200 group-hover:translate-y-0.5">
+                  ↓
+                </span>
+              </a>
+            )}
           </div>
 
           {/* Bottom metadata */}
           <div className="mt-20 flex flex-col gap-5 border-t border-white/10 pt-6 font-mono text-xs text-zinc-600 sm:flex-row sm:items-center sm:justify-between">
-            <span>{profile.handle}</span>
+            <span>{handle}</span>
 
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-zinc-500" />
-              {profile.location}
+              {location}
             </div>
           </div>
         </div>

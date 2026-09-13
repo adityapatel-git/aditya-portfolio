@@ -19,7 +19,14 @@ export default async function Home() {
       <Navbar />
 
       <div className="snap-y snap-mandatory">
-        <Hero />
+        <Hero
+          handle={profile?.handle}
+          location={profile?.location}
+          github={profile?.github}
+          linkedin={profile?.linkedin}
+          leetcode={profile?.leetcode}
+          resumeUrl={profile?.resume_url}
+        />
         <About />
         <Experience />
         <Projects />
