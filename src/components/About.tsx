@@ -28,14 +28,6 @@ export default async function About() {
           <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
             01 / About
           </p>
-
-          <h2 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
-            Engineer by trade.
-            <br />
-            <span className="text-zinc-500">
-              Curious about everything underneath.
-            </span>
-          </h2>
         </div>
 
         <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
