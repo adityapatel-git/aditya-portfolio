@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
+
 import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+
 import ProfileEditor from "./components/ProfileEditor";
 import ExperienceEditor from "./components/ExperienceEditor";
 import ProjectsEditor from "./components/ProjectsEditor";
 import EducationEditor from "./components/EducationEditor";
 import SkillsEditor from "./components/SkillsEditor";
+import MessagesEditor from "./components/MessagesEditor";
+
 import ThemeToggle from "@/components/ThemeToggle";
 
 type Section =
@@ -16,7 +21,8 @@ type Section =
     | "experience"
     | "projects"
     | "education"
-    | "skills";
+    | "skills"
+    | "messages";
 
 const navigation: {
     id: Section;
@@ -28,6 +34,7 @@ const navigation: {
         { id: "projects", label: "Projects" },
         { id: "education", label: "Education" },
         { id: "skills", label: "Skills" },
+        { id: "messages", label: "Messages" },
     ];
 
 export default function AdminPage() {
@@ -44,6 +51,7 @@ export default function AdminPage() {
         projects: 0,
         education: 0,
         skills: 0,
+        messages: 0,
     });
 
     const [loading, setLoading] = useState(true);
@@ -69,20 +77,47 @@ export default function AdminPage() {
                 projectsResult,
                 educationResult,
                 skillsResult,
+                messagesResult,
             ] = await Promise.all([
-                supabase.from("profiles").select("*").single(),
+                supabase
+                    .from("profiles")
+                    .select("*")
+                    .single(),
+
                 supabase
                     .from("experiences")
-                    .select("id", { count: "exact", head: true }),
+                    .select("id", {
+                        count: "exact",
+                        head: true,
+                    }),
+
                 supabase
                     .from("projects")
-                    .select("id", { count: "exact", head: true }),
+                    .select("id", {
+                        count: "exact",
+                        head: true,
+                    }),
+
                 supabase
                     .from("education")
-                    .select("id", { count: "exact", head: true }),
+                    .select("id", {
+                        count: "exact",
+                        head: true,
+                    }),
+
                 supabase
                     .from("skills")
-                    .select("id", { count: "exact", head: true }),
+                    .select("id", {
+                        count: "exact",
+                        head: true,
+                    }),
+
+                supabase
+                    .from("contact_messages")
+                    .select("id", {
+                        count: "exact",
+                        head: true,
+                    }),
             ]);
 
             setProfile(profileResult.data);
@@ -92,6 +127,7 @@ export default function AdminPage() {
                 projects: projectsResult.count ?? 0,
                 education: educationResult.count ?? 0,
                 skills: skillsResult.count ?? 0,
+                messages: messagesResult.count ?? 0,
             });
 
             setLoading(false);
@@ -128,17 +164,24 @@ export default function AdminPage() {
                         href="/"
                         className="font-mono text-lg font-semibold tracking-tight"
                     >
-                        <span className="text-zinc-500">&lt;</span>
+                        <span className="text-zinc-500">
+                            &lt;
+                        </span>
                         AP
-                        <span className="text-zinc-500">/&gt;</span>
+                        <span className="text-zinc-500">
+                            /&gt;
+                        </span>
                     </a>
 
                     <div className="flex items-center gap-5">
                         <span className="hidden text-xs text-zinc-600 sm:block">
                             {userEmail}
                         </span>
+
                         <ThemeToggle />
+
                         <button
+                            type="button"
                             onClick={handleSignOut}
                             className="font-mono text-[10px] uppercase tracking-[0.15em] text-zinc-600 transition hover:text-zinc-300"
                         >
@@ -159,6 +202,7 @@ export default function AdminPage() {
                         <div className="space-y-1">
                             {navigation.map((item, index) => (
                                 <button
+                                    type="button"
                                     key={item.id}
                                     onClick={() => setSection(item.id)}
                                     className={`flex w-full items-center justify-between px-3 py-3 text-left text-sm transition ${section === item.id
@@ -187,16 +231,20 @@ export default function AdminPage() {
                         className="w-full border border-white/10 bg-zinc-950 px-3 py-2 text-sm text-zinc-300 outline-none"
                     >
                         {navigation.map((item) => (
-                            <option key={item.id} value={item.id}>
+                            <option
+                                key={item.id}
+                                value={item.id}
+                            >
                                 {item.label}
                             </option>
                         ))}
                     </select>
                 </div>
 
-                {/* Content */}
+                {/* Main content */}
                 <div className="w-full sm:ml-56">
                     <div className="mx-auto max-w-5xl px-6 py-12 sm:px-10 sm:py-16">
+                        {/* Dashboard */}
                         {section === "dashboard" && (
                             <Dashboard
                                 userEmail={userEmail}
@@ -205,54 +253,36 @@ export default function AdminPage() {
                             />
                         )}
 
+                        {/* Profile */}
                         {section === "profile" && profile && (
-                            <AdminSection
-                                number="01"
-                                title="Profile"
-                                description="Manage the information displayed across your portfolio."
-                            >
-                                <ProfileEditor profile={profile} />
-                            </AdminSection>
+                            <ProfileEditor
+                                profile={profile}
+                            />
                         )}
 
+                        {/* Experience */}
                         {section === "experience" && (
-                            <AdminSection
-                                number="02"
-                                title="Experience"
-                                description="Manage your professional experience."
-                            >
-                                <ExperienceEditor />
-                            </AdminSection>
+                            <ExperienceEditor />
                         )}
 
+                        {/* Projects */}
                         {section === "projects" && (
-                            <AdminSection
-                                number="03"
-                                title="Projects"
-                                description="Manage your projects."
-                            >
-                                <ProjectsEditor />
-                            </AdminSection>
+                            <ProjectsEditor />
                         )}
 
+                        {/* Education */}
                         {section === "education" && (
-                            <AdminSection
-                                number="05"
-                                title="Education"
-                                description="Manage your education history."
-                            >
-                                <EducationEditor />
-                            </AdminSection>
+                            <EducationEditor />
                         )}
 
+                        {/* Skills */}
                         {section === "skills" && (
-                            <AdminSection
-                                number="06"
-                                title="Skills"
-                                description="Manage your technical skills."
-                            >
-                                <SkillsEditor />
-                            </AdminSection>
+                            <SkillsEditor />
+                        )}
+
+                        {/* Messages */}
+                        {section === "messages" && (
+                            <MessagesEditor />
                         )}
                     </div>
                 </div>
@@ -272,6 +302,7 @@ function Dashboard({
         projects: number;
         education: number;
         skills: number;
+        messages: number;
     };
     onNavigate: (section: Section) => void;
 }) {
@@ -289,29 +320,45 @@ function Dashboard({
                 Manage your portfolio content.
             </p>
 
-            <div className="mt-12 grid border-t border-white/10 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-12 grid border-t border-white/10 sm:grid-cols-2 lg:grid-cols-5">
+                <Stat
+                    label="Profile"
+                    value="01"
+                    onClick={() =>
+                        onNavigate("profile")
+                    }
+                />
+
                 <Stat
                     label="Experience"
                     value={counts.experiences}
-                    onClick={() => onNavigate("experience")}
+                    onClick={() =>
+                        onNavigate("experience")
+                    }
                 />
 
                 <Stat
                     label="Projects"
                     value={counts.projects}
-                    onClick={() => onNavigate("projects")}
+                    onClick={() =>
+                        onNavigate("projects")
+                    }
                 />
 
                 <Stat
                     label="Education"
                     value={counts.education}
-                    onClick={() => onNavigate("education")}
+                    onClick={() =>
+                        onNavigate("education")
+                    }
                 />
 
                 <Stat
-                    label="Skills"
-                    value={counts.skills}
-                    onClick={() => onNavigate("skills")}
+                    label="Messages"
+                    value={counts.messages}
+                    onClick={() =>
+                        onNavigate("messages")
+                    }
                 />
             </div>
 
@@ -334,11 +381,12 @@ function Stat({
     onClick,
 }: {
     label: string;
-    value: number;
+    value: string | number;
     onClick: () => void;
 }) {
     return (
         <button
+            type="button"
             onClick={onClick}
             className="border-b border-r border-white/10 p-6 text-left transition hover:bg-white/[0.02]"
         >
@@ -362,7 +410,7 @@ function AdminSection({
     number: string;
     title: string;
     description: string;
-    children: React.ReactNode;
+    children: ReactNode;
 }) {
     return (
         <section>
@@ -388,29 +436,5 @@ function AdminSection({
                 {children}
             </div>
         </section>
-    );
-}
-
-function ComingSection({
-    number,
-    title,
-    description,
-}: {
-    number: string;
-    title: string;
-    description: string;
-}) {
-    return (
-        <AdminSection
-            number={number}
-            title={title}
-            description={description}
-        >
-            <div className="border-t border-white/10 py-8">
-                <p className="text-sm text-zinc-600">
-                    Editor will be added here next.
-                </p>
-            </div>
-        </AdminSection>
     );
 }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProjectBySlug, getProjects } from "@/lib/portfolio";
+export const dynamic = "force-dynamic";
 
 type ProjectPageProps = {
   params: Promise<{ slug: string }>;

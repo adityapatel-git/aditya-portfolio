@@ -8,7 +8,12 @@ import Navbar from "@/components/Navbar";
 import Projects from "@/components/Projects";
 import Contact from "@/components/Contact";
 import { getProfile } from "@/lib/portfolio";
-export default function Home() {
+
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const profile = await getProfile();
+
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
       <Navbar />
@@ -20,7 +25,14 @@ export default function Home() {
         <Projects />
         <DeveloperActivity />
         <Education />
-        <Contact />
+
+        <Contact
+          email={profile?.email}
+          linkedin={profile?.linkedin}
+          github={profile?.github}
+          leetcode={profile?.leetcode}
+        />
+
         <Footer />
       </div>
     </main>
