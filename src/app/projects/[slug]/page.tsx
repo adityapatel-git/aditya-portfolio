@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
 
@@ -28,121 +29,223 @@ export default async function ProjectPage({
 
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto max-w-5xl px-6 py-12">
+      <div className="mx-auto max-w-5xl px-6 py-10 sm:py-12">
         {/* Back */}
-        <a
-          href="/projects"
-          className="font-mono text-sm text-zinc-600 transition hover:text-zinc-300"
+        <Link
+          href="/#projects"
+          className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-zinc-600 transition hover:text-zinc-300"
         >
-          ← Back to projects
-        </a>
+          <span className="transition-transform group-hover:-translate-x-1">
+            ←
+          </span>
+          Back to projects
+        </Link>
 
         {/* Header */}
-        <header className="mt-20">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full border border-zinc-800 px-3 py-1 text-xs text-zinc-500">
+        <header className="mt-24">
+          <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+            <span>
               {project.status}
             </span>
 
-            {project.featured && (
-              <span className="rounded-full border border-zinc-800 px-3 py-1 text-xs text-zinc-500">
-                Featured
-              </span>
-            )}
+            <span className="h-px w-6 bg-zinc-800" />
+
+            <span>
+              {project.featured
+                ? "Featured project"
+                : "Project"}
+            </span>
           </div>
 
-          <h1 className="mt-6 text-5xl font-bold tracking-tight sm:text-7xl">
+          <h1 className="mt-6 text-5xl font-bold tracking-[-0.04em] sm:text-7xl">
             {project.name}
           </h1>
 
-          <p className="mt-6 max-w-3xl text-xl leading-relaxed text-zinc-500">
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-500 sm:text-xl">
             {project.shortDescription}
           </p>
 
           {/* Links */}
-          <div className="mt-8 flex flex-wrap gap-3">
-            {project.url && (
-              <a
-                href={project.url}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full bg-white px-5 py-2.5 text-sm font-medium text-zinc-950 transition hover:bg-zinc-200"
-              >
-                Live Demo ↗
-              </a>
-            )}
+          {(project.url || project.github) && (
+            <div className="mt-8 flex flex-wrap items-center gap-6">
+              {project.url && (
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center gap-2 text-sm text-zinc-300 transition hover:text-white"
+                >
+                  Live Demo
+                  <span className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                    ↗
+                  </span>
+                </a>
+              )}
 
-            {project.github && (
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border border-zinc-700 px-5 py-2.5 text-sm font-medium transition hover:border-zinc-400"
-              >
-                GitHub ↗
-              </a>
-            )}
-          </div>
+              {project.github && (
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+                >
+                  GitHub
+                  <span className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                    ↗
+                  </span>
+                </a>
+              )}
+            </div>
+          )}
         </header>
 
-        {/* Divider */}
-        <div className="my-16 h-px bg-zinc-900" />
+        {/* Project metadata */}
+        <div className="mt-16 grid border-y border-white/10 sm:grid-cols-[1fr_2fr]">
+          <div className="border-b border-white/5 py-5 sm:border-b-0 sm:border-r sm:pr-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
+              Project
+            </p>
 
-        {/* Description */}
-        <section>
-          <p className="font-mono text-sm text-zinc-600">
-            project.overview
-          </p>
-
-          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-400">
-            {project.description}
-          </p>
-        </section>
-
-        {/* Technology */}
-        <section className="mt-16">
-          <p className="font-mono text-sm text-zinc-600">
-            technology.stack
-          </p>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {project.techStack.map((technology) => (
-              <span
-                key={technology}
-                className="rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-2 text-sm text-zinc-300"
-              >
-                {technology}
-              </span>
-            ))}
+            <p className="mt-2 text-sm text-zinc-400">
+              {project.name}
+            </p>
           </div>
-        </section>
 
-        {/* Future content */}
+          <div className="py-5 sm:pl-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
+              Stack
+            </p>
+
+            <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
+              {project.techStack.map((technology) => (
+                <span
+                  key={technology}
+                  className="text-sm text-zinc-400"
+                >
+                  {technology}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Overview */}
         <section className="mt-20">
-          <p className="font-mono text-sm text-zinc-600">
-            more.coming_soon()
-          </p>
+          <div className="grid gap-8 sm:grid-cols-[180px_1fr]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+              01 / Overview
+            </p>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-3">
-            <Placeholder title="Architecture" />
-
-            <Placeholder title="Screenshots" />
-
-            <Placeholder title="Technical details" />
+            <div>
+              <p className="max-w-3xl text-lg leading-8 text-zinc-400">
+                {project.description}
+              </p>
+            </div>
           </div>
         </section>
+
+        {/* Technical focus */}
+        {project.slug === "hallsight" && (
+          <section className="mt-20 border-t border-white/5 pt-10">
+            <div className="grid gap-8 sm:grid-cols-[180px_1fr]">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+                02 / Technical focus
+              </p>
+
+              <div className="grid gap-8 sm:grid-cols-2">
+                <TechnicalItem
+                  title="Backend"
+                  description="RESTful APIs with authentication, authorization, and role-based access control."
+                />
+
+                <TechnicalItem
+                  title="Database"
+                  description="MySQL database operations implemented through Prisma ORM and defined using entity-relationship models."
+                />
+
+                <TechnicalItem
+                  title="Application"
+                  description="Designed for real-time event seat occupancy and attendance tracking."
+                />
+
+                <TechnicalItem
+                  title="Tooling"
+                  description="Postman used for API development and testing alongside the Next.js application stack."
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {project.slug === "canteen-point" && (
+          <section className="mt-20 border-t border-white/5 pt-10">
+            <div className="grid gap-8 sm:grid-cols-[180px_1fr]">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+                02 / What it does
+              </p>
+
+              <div className="grid gap-8 sm:grid-cols-3">
+                <TechnicalItem
+                  title="Orders"
+                  description="Interface for streamlining customer order placement."
+                />
+
+                <TechnicalItem
+                  title="Payments"
+                  description="Payment processing functionality within the canteen workflow."
+                />
+
+                <TechnicalItem
+                  title="Inventory"
+                  description="Inventory management backed by MySQL data storage."
+                />
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Bottom navigation */}
+        <div className="mt-24 flex items-center justify-between border-t border-white/10 pt-6">
+          <Link
+            href="/#projects"
+            className="group flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-zinc-600 transition hover:text-zinc-300"
+          >
+            <span className="transition-transform group-hover:-translate-x-1">
+              ←
+            </span>
+            All projects
+          </Link>
+
+          <Link
+            href="/#contact"
+            className="group flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-zinc-600 transition hover:text-zinc-300"
+          >
+            Get in touch
+            <span className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
+          </Link>
+        </div>
       </div>
     </main>
   );
 }
 
-function Placeholder({ title }: { title: string }) {
+function TechnicalItem({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-800 p-6">
-      <p className="text-sm text-zinc-500">{title}</p>
+    <div>
+      <h3 className="text-sm font-medium text-zinc-300">
+        {title}
+      </h3>
 
-      <p className="mt-2 text-xs text-zinc-700">
-        Coming soon
+      <p className="mt-2 text-sm leading-6 text-zinc-600">
+        {description}
       </p>
     </div>
   );

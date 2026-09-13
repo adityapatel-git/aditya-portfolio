@@ -2,7 +2,7 @@ import { profile } from "@/data/profile";
 
 export default function Hero() {
   return (
-    <section className="relative isolate flex min-h-screen items-center overflow-hidden">
+    <section className="relative isolate flex min-h-[100svh] snap-start items-center overflow-hidden">
       {/* Subtle grid */}
       <div
         className="pointer-events-none absolute inset-0 -z-10 opacity-40"
@@ -20,23 +20,18 @@ export default function Hero() {
 
       <div className="mx-auto w-full max-w-6xl px-6 pb-20 pt-32">
         <div className="max-w-5xl">
-          {/* Intro label */}
-          <div className="mb-8 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
-            <span className="h-px w-8 bg-zinc-700" />
-            Software Engineer
-          </div>
 
           {/* Main heading */}
           <h1 className="text-5xl font-bold leading-[1.05] tracking-[-0.04em] sm:text-7xl lg:text-8xl">
-            Building software
+            Building systems
             <br />
-            <span className="text-zinc-500">that scales.</span>
+            <span className="text-zinc-500">that solve problems.</span>
           </h1>
 
-          {/* Intro */}
-          <p className="mt-8 max-w-2xl text-lg leading-8 text-zinc-400 sm:text-xl">
-            {profile.intro}
-          </p>
+          <div className="mb-8 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
+            <span className="h-px w-8 bg-zinc-700" />
+            Software Engineer · Backend · Cloud
+          </div>
 
           {/* Actions */}
           <div className="mt-10 flex flex-wrap items-center gap-3">
@@ -76,15 +71,7 @@ export default function Hero() {
               </span>
             </a>
 
-            <a
-              href={profile.links.email}
-              className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-zinc-950 transition duration-200 hover:bg-zinc-200"
-            >
-              Get in touch
-              <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                →
-              </span>
-            </a>
+
           </div>
 
           {/* Bottom metadata */}
@@ -97,14 +84,6 @@ export default function Hero() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-3 text-zinc-700 sm:flex">
-        <span className="font-mono text-[10px] uppercase tracking-[0.25em]">
-          Scroll
-        </span>
-        <span className="h-10 w-px bg-gradient-to-b from-zinc-600 to-transparent" />
       </div>
     </section>
   );

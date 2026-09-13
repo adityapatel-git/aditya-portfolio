@@ -39,10 +39,9 @@ export default function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-      className="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-zinc-500 transition hover:border-white/20 hover:text-white"
+      className="theme-toggle flex h-8 w-8 items-center justify-center rounded-full border border-zinc-200 text-zinc-500 transition hover:border-zinc-400"
     >
       {theme === "dark" ? (
-        // Sun
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -57,7 +56,6 @@ export default function ThemeToggle() {
           />
         </svg>
       ) : (
-        // Moon
         <svg
           viewBox="0 0 24 24"
           fill="none"

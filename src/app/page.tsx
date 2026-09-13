@@ -10,31 +10,19 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
-    <main className="min-h-screen overflow-hidden bg-zinc-950 text-zinc-100">
+    <main className="min-h-screen bg-zinc-950 text-zinc-100">
       <Navbar />
 
-      {/* Hero */}
-      <Hero />
-
-      {/* About */}
-      <About />
-
-      {/* Experience */}
-      <Experience />
-
-      {/* Projects */}
-      <Projects />
-
-      {/* Developer Activity */}
-      <DeveloperActivity />
-
-      {/* Education */}
-      <Education />
-
-      {/* Contact */}
-      <Contact />
-
-      <Footer />
+      <div className="snap-y snap-mandatory">
+        <Hero />
+        <About />
+        <Experience />
+        <Projects />
+        <DeveloperActivity />
+        <Education />
+        <Contact />
+        <Footer />
+      </div>
     </main>
   );
 }

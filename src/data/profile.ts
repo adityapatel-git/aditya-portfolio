@@ -1,35 +1,50 @@
 export const profile = {
-    name: "Aditya Patel",
-    handle: "@adityapatel",
-    role: "Software Engineer",
-    email: "patel.aditya@dal.ca",
-  
-    intro:
-      "Software engineer focused on building scalable backend systems, cloud-native applications, and clean developer-first digital experiences.",
-  
-    location: "Dalhousie University, Canada",
-  
-    links: {
-      github: "https://github.com/adityapatel-git",
-      linkedin: "https://linkedin.com/in/4118adi",
-      leetcode: "https://leetcode.com/u/4118adi/",
-      email: "mailto:patel.aditya@dal.ca",
-    },
-  
-    skills: [
-      "C#",
-      ".NET Core",
-      "ASP.NET",
-      "TypeScript",
-      "Next.js",
-      "React",
-      "Node.js",
-      "Microsoft SQL Server",
-      "Docker",
-      "Terraform",
-      "Azure",
-      "OracleDB",
-      "KendoUI",
-      "SSRS",
-    ],
+  name: "Aditya Patel",
+  handle: "@adityapatel",
+  role: "Software Engineer",
+  email: "adityap4118@gmail.com",
+
+  intro:
+    "Software engineer experienced in enterprise .NET applications, legacy modernization, backend systems, and cloud infrastructure.",
+
+  location: "Halifax, Nova Scotia, Canada",
+
+  links: {
+    github: "https://github.com/adityapatel-git",
+    linkedin: "https://linkedin.com/in/4118adi",
+    leetcode: "https://leetcode.com/u/4118adi/",
+    email: "mailto:adityap4118@gmail.com",
+  },
+
+  skills: [
+    "C",
+    "C++",
+    "C#",
+    "Python",
+    "JavaScript",
+    "TypeScript",
+    "SQL",
+    ".NET",
+    "ASP.NET",
+    "React",
+    "Next.js",
+    "Node.js",
+    "Express.js",
+    "jQuery",
+    "Kendo UI",
+    "Ext.js",
+    "Oracle DB",
+    "Microsoft SQL Server",
+    "MySQL",
+    "PostgreSQL",
+    "MongoDB",
+    "Prisma ORM",
+    "Docker",
+    "Terraform",
+    "Azure DevOps",
+    "Google Cloud",
+    "Git",
+    "Jira",
+    "Nginx",
+  ],
 };

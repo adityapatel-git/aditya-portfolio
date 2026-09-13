@@ -5,9 +5,9 @@ export default function DeveloperActivity() {
   return (
     <section
       id="developerActivity"
-      className="border-t border-white/5"
+      className="flex min-h-[100svh] snap-start items-center border-t border-white/5"
     >
-      <div className="mx-auto max-w-6xl px-6 py-28">
+      <div className="mx-auto w-full max-w-6xl px-6 py-16">
         <div className="mb-14">
           <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
             04 / Developer Activity

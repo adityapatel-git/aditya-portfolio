@@ -2,8 +2,11 @@ import { experience } from "@/data/experience";
 
 export default function Experience() {
   return (
-    <section id="experience" className="border-t border-white/5">
-      <div className="mx-auto max-w-6xl px-6 py-28">
+    <section
+      id="experience"
+      className="flex min-h-[100svh] snap-start items-center border-t border-white/5"
+    >
+      <div className="mx-auto w-full max-w-6xl px-6 py-16">
         {/* Heading */}
         <div className="mb-16">
           <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
