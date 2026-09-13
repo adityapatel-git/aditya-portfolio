@@ -82,35 +82,6 @@ export default async function About() {
             ))}
           </div>
         </div>
-
-        <div className="mt-16 grid border-y border-white/10 sm:grid-cols-3">
-          <div className="border-b border-white/10 py-5 sm:border-b-0 sm:border-r sm:pr-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
-              Focus
-            </p>
-            <p className="mt-2 text-sm text-zinc-400">
-              Backend · Cloud · Systems
-            </p>
-          </div>
-
-          <div className="border-b border-white/10 py-5 sm:border-b-0 sm:border-r sm:px-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
-              Education
-            </p>
-            <p className="mt-2 text-sm text-zinc-400">
-              {profile?.location}
-            </p>
-          </div>
-
-          <div className="py-5 sm:pl-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
-              Currently
-            </p>
-            <p className="mt-2 text-sm text-zinc-400">
-              Building & learning
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );
