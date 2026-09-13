@@ -1,0 +1,649 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { createSupabaseBrowserClient } from "@/lib/supabase-browser";
+
+type ProjectStatus = "live" | "development" | "planned";
+
+type Project = {
+    id: string;
+    slug: string;
+    name: string;
+    short_description: string;
+    description: string;
+    tech_stack: string[];
+    url: string | null;
+    github: string | null;
+    featured: boolean;
+    status: ProjectStatus;
+    display_order: number;
+};
+
+type ProjectForm = {
+    slug: string;
+    name: string;
+    short_description: string;
+    description: string;
+    tech_stack: string;
+    url: string;
+    github: string;
+    featured: boolean;
+    status: ProjectStatus;
+};
+
+const emptyForm: ProjectForm = {
+    slug: "",
+    name: "",
+    short_description: "",
+    description: "",
+    tech_stack: "",
+    url: "",
+    github: "",
+    featured: false,
+    status: "development",
+};
+
+export default function ProjectsEditor() {
+    const supabase = createSupabaseBrowserClient();
+
+    const [projects, setProjects] = useState<Project[]>([]);
+    const [form, setForm] = useState<ProjectForm>(emptyForm);
+    const [editingId, setEditingId] = useState<string | null>(null);
+
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        loadProjects();
+    }, []);
+
+    async function loadProjects() {
+        setLoading(true);
+
+        const { data, error } = await supabase
+            .from("projects")
+            .select("*")
+            .order("display_order", { ascending: true })
+            .order("created_at", { ascending: true });
+
+        if (error) {
+            console.error(error);
+            setMessage(error.message);
+            setLoading(false);
+            return;
+        }
+
+        setProjects(data ?? []);
+        setLoading(false);
+    }
+
+    function updateField<K extends keyof ProjectForm>(
+        field: K,
+        value: ProjectForm[K],
+    ) {
+        setForm((current) => ({
+            ...current,
+            [field]: value,
+        }));
+    }
+
+    function startAdd() {
+        setEditingId(null);
+        setForm(emptyForm);
+        setMessage("");
+    }
+
+    function startEdit(project: Project) {
+        setEditingId(project.id);
+
+        setForm({
+            slug: project.slug,
+            name: project.name,
+            short_description: project.short_description,
+            description: project.description,
+            tech_stack: project.tech_stack.join(", "),
+            url: project.url ?? "",
+            github: project.github ?? "",
+            featured: project.featured,
+            status: project.status,
+        });
+
+        setMessage("");
+    }
+
+    function cancelEdit() {
+        setEditingId(null);
+        setForm(emptyForm);
+        setMessage("");
+    }
+
+    async function saveProject() {
+        if (
+            !form.slug.trim() ||
+            !form.name.trim() ||
+            !form.short_description.trim() ||
+            !form.description.trim()
+        ) {
+            setMessage("Please fill in all required fields.");
+            return;
+        }
+
+        setSaving(true);
+        setMessage("");
+
+        const techStack = form.tech_stack
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+
+        const projectData = {
+            slug: form.slug.trim().toLowerCase(),
+            name: form.name.trim(),
+            short_description: form.short_description.trim(),
+            description: form.description.trim(),
+            tech_stack: techStack,
+            url: form.url.trim() || null,
+            github: form.github.trim() || null,
+            featured: form.featured,
+            status: form.status,
+        };
+
+        if (editingId) {
+            const { error } = await supabase
+                .from("projects")
+                .update(projectData)
+                .eq("id", editingId);
+
+            if (error) {
+                console.error(error);
+                setMessage(error.message);
+                setSaving(false);
+                return;
+            }
+
+            setMessage("Project updated.");
+        } else {
+            const { data: lastProject, error: orderError } =
+                await supabase
+                    .from("projects")
+                    .select("display_order")
+                    .order("display_order", { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+            if (orderError) {
+                console.error(orderError);
+                setMessage(orderError.message);
+                setSaving(false);
+                return;
+            }
+
+            const nextOrder =
+                (lastProject?.display_order ?? 0) + 1;
+
+            const { error } = await supabase
+                .from("projects")
+                .insert({
+                    ...projectData,
+                    display_order: nextOrder,
+                });
+
+            if (error) {
+                console.error(error);
+                setMessage(error.message);
+                setSaving(false);
+                return;
+            }
+
+            setMessage("Project added.");
+        }
+
+        setSaving(false);
+        setEditingId(null);
+        setForm(emptyForm);
+
+        await loadProjects();
+    }
+
+    async function deleteProject(id: string) {
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this project?",
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        setMessage("");
+
+        const { error } = await supabase
+            .from("projects")
+            .delete()
+            .eq("id", id);
+
+        if (error) {
+            console.error(error);
+            setMessage(error.message);
+            return;
+        }
+
+        // Re-number remaining projects.
+        const { data: remaining, error: fetchError } =
+            await supabase
+                .from("projects")
+                .select("id")
+                .order("display_order", { ascending: true })
+                .order("created_at", { ascending: true });
+
+        if (fetchError) {
+            console.error(fetchError);
+            setMessage(fetchError.message);
+            await loadProjects();
+            return;
+        }
+
+        for (let index = 0; index < (remaining ?? []).length; index++) {
+            await supabase
+                .from("projects")
+                .update({
+                    display_order: index + 1,
+                })
+                .eq("id", remaining[index].id);
+        }
+
+        if (editingId === id) {
+            cancelEdit();
+        }
+
+        setMessage("Project deleted.");
+        await loadProjects();
+    }
+
+    async function moveProject(
+        index: number,
+        direction: -1 | 1,
+    ) {
+        const newIndex = index + direction;
+
+        if (
+            newIndex < 0 ||
+            newIndex >= projects.length
+        ) {
+            return;
+        }
+
+        const current = projects[index];
+        const target = projects[newIndex];
+
+        setMessage("");
+
+        const { error } = await supabase.rpc(
+            "swap_project_order",
+            {
+                first_id: current.id,
+                second_id: target.id,
+                first_order: current.display_order,
+                second_order: target.display_order,
+            },
+        );
+
+        if (error) {
+            console.error(
+                "Error reordering projects:",
+                error,
+            );
+            setMessage(error.message);
+            return;
+        }
+
+        const reordered = [...projects];
+
+        [reordered[index], reordered[newIndex]] = [
+            reordered[newIndex],
+            reordered[index],
+        ];
+
+        reordered.forEach((project, i) => {
+            project.display_order = i + 1;
+        });
+
+        setProjects(reordered);
+        setMessage("Order updated.");
+    }
+
+    if (loading) {
+        return (
+            <div className="py-8 text-sm text-zinc-500">
+                Loading projects...
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-10">
+            {/* Project list */}
+            <div>
+                <div className="divide-y divide-zinc-200 border-y border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+                    {projects.length === 0 ? (
+                        <div className="py-10 text-sm text-zinc-500">
+                            No projects yet.
+                        </div>
+                    ) : (
+                        projects.map((project, index) => (
+                            <div
+                                key={project.id}
+                                className="flex gap-4 py-6"
+                            >
+                                {/* Order controls */}
+                                <div className="flex w-12 shrink-0 flex-col items-center gap-1">
+                                    <span className="font-mono text-xs text-zinc-500">
+                                        {String(index + 1).padStart(2, "0")}
+                                    </span>
+
+                                    <div className="flex flex-col gap-1">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                moveProject(index, -1)
+                                            }
+                                            disabled={index === 0}
+                                            aria-label="Move project up"
+                                            className="flex h-7 w-7 items-center justify-center border border-zinc-200 text-zinc-500 transition hover:border-zinc-400 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-20 dark:border-zinc-800 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+                                        >
+                                            ↑
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                moveProject(index, 1)
+                                            }
+                                            disabled={
+                                                index === projects.length - 1
+                                            }
+                                            aria-label="Move project down"
+                                            className="flex h-7 w-7 items-center justify-center border border-zinc-200 text-zinc-500 transition hover:border-zinc-400 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-20 dark:border-zinc-800 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+                                        >
+                                            ↓
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Project details */}
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex flex-col justify-between gap-3 sm:flex-row">
+                                        <div>
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                <h3 className="font-medium text-zinc-900 dark:text-zinc-100">
+                                                    {project.name}
+                                                </h3>
+
+                                                {project.featured && (
+                                                    <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+                                                        Featured
+                                                    </span>
+                                                )}
+
+                                                <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500">
+                                                    {project.status}
+                                                </span>
+                                            </div>
+
+                                            <p className="mt-1 font-mono text-xs text-zinc-500">
+                                                /{project.slug}
+                                            </p>
+                                        </div>
+
+                                        <div className="flex gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    startEdit(project)
+                                                }
+                                                className="border border-zinc-200 px-3 py-1.5 text-xs text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+                                            >
+                                                Edit
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    deleteProject(project.id)
+                                                }
+                                                className="border border-zinc-200 px-3 py-1.5 text-xs text-zinc-600 transition hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-800 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-100"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <p className="mt-4 max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                                        {project.short_description}
+                                    </p>
+
+                                    {project.tech_stack.length > 0 && (
+                                        <p className="mt-3 font-mono text-xs text-zinc-500">
+                                            {project.tech_stack.join(" · ")}
+                                        </p>
+                                    )}
+
+                                    <div className="mt-3 flex flex-wrap gap-4 font-mono text-xs text-zinc-500">
+                                        {project.url && (
+                                            <span>Live: {project.url}</span>
+                                        )}
+
+                                        {project.github && (
+                                            <span>GitHub: {project.github}</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* Form */}
+            <div className="border-t border-zinc-200 pt-8 dark:border-zinc-800">
+                <div className="mb-6">
+                    <p className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-500">
+                        {editingId
+                            ? "Edit project"
+                            : "Add project"}
+                    </p>
+                </div>
+
+                <div className="grid gap-6 sm:grid-cols-2">
+                    <Field
+                        label="Name"
+                        value={form.name}
+                        onChange={(value) =>
+                            updateField("name", value)
+                        }
+                        placeholder="HallSight"
+                    />
+
+                    <Field
+                        label="Slug"
+                        value={form.slug}
+                        onChange={(value) =>
+                            updateField("slug", value)
+                        }
+                        placeholder="hallsight"
+                    />
+
+                    <div className="sm:col-span-2">
+                        <Field
+                            label="Short description"
+                            value={form.short_description}
+                            onChange={(value) =>
+                                updateField(
+                                    "short_description",
+                                    value,
+                                )
+                            }
+                            placeholder="Real-time event seat occupancy and attendance tracking platform."
+                        />
+                    </div>
+
+                    <Field
+                        label="Live URL"
+                        value={form.url}
+                        onChange={(value) =>
+                            updateField("url", value)
+                        }
+                        placeholder="https://..."
+                    />
+
+                    <Field
+                        label="GitHub URL"
+                        value={form.github}
+                        onChange={(value) =>
+                            updateField("github", value)
+                        }
+                        placeholder="https://github.com/..."
+                    />
+
+                    <div className="sm:col-span-2">
+                        <Field
+                            label="Technologies"
+                            value={form.tech_stack}
+                            onChange={(value) =>
+                                updateField("tech_stack", value)
+                            }
+                            placeholder="Next.js, Prisma ORM, MySQL, REST APIs"
+                        />
+
+                        <p className="mt-2 text-xs text-zinc-500">
+                            Separate technologies with commas.
+                        </p>
+                    </div>
+
+                    <div>
+                        <label className="mb-2 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                            Status
+                        </label>
+
+                        <select
+                            value={form.status}
+                            onChange={(event) =>
+                                updateField(
+                                    "status",
+                                    event.target.value as ProjectStatus,
+                                )
+                            }
+                            className="w-full border border-zinc-200 bg-transparent px-4 py-3 text-sm text-zinc-900 outline-none focus:border-zinc-500 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-100"
+                        >
+                            <option value="live">Live</option>
+                            <option value="development">
+                                Development
+                            </option>
+                            <option value="planned">Planned</option>
+                        </select>
+                    </div>
+
+                    <div className="flex items-end">
+                        <label className="flex cursor-pointer items-center gap-3 pb-3">
+                            <input
+                                type="checkbox"
+                                checked={form.featured}
+                                onChange={(event) =>
+                                    updateField(
+                                        "featured",
+                                        event.target.checked,
+                                    )
+                                }
+                                className="h-4 w-4"
+                            />
+
+                            <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                                Featured project
+                            </span>
+                        </label>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                        <label className="mb-2 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                            Description
+                        </label>
+
+                        <textarea
+                            value={form.description}
+                            onChange={(event) =>
+                                updateField(
+                                    "description",
+                                    event.target.value,
+                                )
+                            }
+                            rows={7}
+                            placeholder="Describe the project, architecture, functionality, and technical work..."
+                            className="w-full resize-y border border-zinc-200 bg-transparent px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-500 dark:border-zinc-800 dark:text-zinc-100 dark:focus:border-zinc-500"
+                        />
+                    </div>
+                </div>
+
+                <div className="mt-6 flex items-center gap-3">
+                    <button
+                        type="button"
+                        onClick={saveProject}
+                        disabled={saving}
+                        className="border border-[var(--button-border)] bg-[var(--button-bg)] px-5 py-2.5 text-sm font-medium text-[var(--button-text)] transition hover:bg-[var(--button-hover)]"
+                    >
+                        {saving
+                            ? "Saving..."
+                            : editingId
+                                ? "Update project"
+                                : "Add project"}
+                    </button>
+
+                    {editingId && (
+                        <button
+                            type="button"
+                            onClick={cancelEdit}
+                            className="px-4 py-2.5 text-sm text-zinc-500 transition hover:text-zinc-900 dark:hover:text-zinc-100"
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </div>
+
+                {message && (
+                    <p className="mt-4 text-sm text-zinc-500">
+                        {message}
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function Field({
+    label,
+    value,
+    onChange,
+    placeholder,
+}: {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    placeholder?: string;
+}) {
+    return (
+        <div>
+            <label className="mb-2 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                {label}
+            </label>
+
+            <input
+                type="text"
+                value={value}
+                onChange={(event) =>
+                    onChange(event.target.value)
+                }
+                placeholder={placeholder}
+                className="w-full border border-zinc-200 bg-transparent px-4 py-3 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-500 dark:border-zinc-800 dark:text-zinc-100 dark:focus:border-zinc-500"
+            />
+        </div>
+    );
+}

@@ -74,3 +74,17 @@ html[data-theme="dark"] .theme-toggle:hover {
 html[data-theme="dark"] .menu-toggle:hover {
   color: #ffffff;
 }
+
+html[data-theme="dark"] {
+  --button-bg: #f4f4f5;
+  --button-border: #f4f4f5;
+  --button-text: #18181b;
+  --button-hover: #e4e4e7;
+}
+
+html[data-theme="light"] {
+  --button-bg: #18181b;
+  --button-border: #18181b;
+  --button-text: #f4f4f5;
+  --button-hover: #27272a;
+}

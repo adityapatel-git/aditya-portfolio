@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { projects } from "@/data/projects";
+import { getProjectBySlug, getProjects } from "@/lib/portfolio";
 
 type ProjectPageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const projects = await getProjects();
+
   return projects.map((project) => ({
     slug: project.slug,
   }));
@@ -19,9 +19,7 @@ export default async function ProjectPage({
 }: ProjectPageProps) {
   const { slug } = await params;
 
-  const project = projects.find(
-    (project) => project.slug === slug,
-  );
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     notFound();
@@ -30,7 +28,6 @@ export default async function ProjectPage({
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-5xl px-6 py-10 sm:py-12">
-        {/* Back */}
         <Link
           href="/#projects"
           className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-zinc-600 transition hover:text-zinc-300"
@@ -41,19 +38,14 @@ export default async function ProjectPage({
           Back to projects
         </Link>
 
-        {/* Header */}
         <header className="mt-24">
           <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
-            <span>
-              {project.status}
-            </span>
+            <span>{project.status}</span>
 
             <span className="h-px w-6 bg-zinc-800" />
 
             <span>
-              {project.featured
-                ? "Featured project"
-                : "Project"}
+              {project.featured ? "Featured project" : "Project"}
             </span>
           </div>
 
@@ -62,10 +54,9 @@ export default async function ProjectPage({
           </h1>
 
           <p className="mt-6 max-w-3xl text-lg leading-8 text-zinc-500 sm:text-xl">
-            {project.shortDescription}
+            {project.short_description}
           </p>
 
-          {/* Links */}
           {(project.url || project.github) && (
             <div className="mt-8 flex flex-wrap items-center gap-6">
               {project.url && (
@@ -99,7 +90,6 @@ export default async function ProjectPage({
           )}
         </header>
 
-        {/* Project metadata */}
         <div className="mt-16 grid border-y border-white/10 sm:grid-cols-[1fr_2fr]">
           <div className="border-b border-white/5 py-5 sm:border-b-0 sm:border-r sm:pr-8">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
@@ -117,7 +107,7 @@ export default async function ProjectPage({
             </p>
 
             <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
-              {project.techStack.map((technology) => (
+              {project.tech_stack.map((technology: string) => (
                 <span
                   key={technology}
                   className="text-sm text-zinc-400"
@@ -129,7 +119,6 @@ export default async function ProjectPage({
           </div>
         </div>
 
-        {/* Overview */}
         <section className="mt-20">
           <div className="grid gap-8 sm:grid-cols-[180px_1fr]">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
@@ -144,7 +133,6 @@ export default async function ProjectPage({
           </div>
         </section>
 
-        {/* Technical focus */}
         {project.slug === "hallsight" && (
           <section className="mt-20 border-t border-white/5 pt-10">
             <div className="grid gap-8 sm:grid-cols-[180px_1fr]">
@@ -204,7 +192,6 @@ export default async function ProjectPage({
           </section>
         )}
 
-        {/* Bottom navigation */}
         <div className="mt-24 flex items-center justify-between border-t border-white/10 pt-6">
           <Link
             href="/#projects"

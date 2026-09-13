@@ -1,140 +1,116 @@
-import { profile } from "@/data/profile";
+import { getProfile, getSkills } from "@/lib/portfolio";
 
-const skillGroups = [
-  {
-    label: "Backend",
-    skills: [
-      "C#",
-      ".NET",
-      "ASP.NET",
-      "Node.js",
-      "Express.js",
-    ],
-  },
-  {
-    label: "Frontend",
-    skills: [
-      "TypeScript",
-      "React",
-      "Next.js",
-      "Kendo UI",
-      "jQuery",
-      "Ext.js",
-    ],
-  },
-  {
-    label: "Data",
-    skills: [
-      "SQL Server",
-      "Oracle DB",
-      "MySQL",
-      "PostgreSQL",
-      "MongoDB",
-      "Prisma",
-    ],
-  },
-  {
-    label: "Cloud & Infrastructure",
-    skills: [
-      "Azure",
-      "Google Cloud",
-      "Docker",
-      "Terraform",
-      "Nginx",
-    ],
-  },
+const categories = [
+  "Backend",
+  "Frontend",
+  "Data",
+  "Cloud & Infrastructure",
 ];
 
-export default function About() {
+export default async function About() {
+  const [profile, skills] = await Promise.all([
+    getProfile(),
+    getSkills(),
+  ]);
+
+  const groupedSkills = categories.map((category) => ({
+    category,
+    skills: skills.filter((skill) => skill.category === category),
+  }));
+
   return (
     <section
       id="about"
       className="flex min-h-[100svh] snap-start items-center border-t border-white/5"
     >
-      <div className="mx-auto w-full max-w-6xl px-6 py-20">
-        <div className="mb-16">
-        <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
-          01 / About
-        </p>
+      <div className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="mb-14">
+          <p className="mb-3 font-mono text-xs uppercase tracking-[0.25em] text-zinc-600">
+            01 / About
+          </p>
 
-        <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          Engineer by trade.
-          <br />
-          <span className="text-zinc-500">
-            Curious about everything underneath.
-          </span>
-        </h2>
-      </div>
+          <h2 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+            Engineer by trade.
+            <br />
+            <span className="text-zinc-500">
+              Curious about everything underneath.
+            </span>
+          </h2>
+        </div>
 
-        <div className="grid gap-16 lg:grid-cols-[1fr_1fr]">
-          <div className="max-w-xl space-y-6 text-base leading-7 text-zinc-500 sm:text-lg sm:leading-8">
+        <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
+          <div className="max-w-2xl space-y-6 text-base leading-8 text-zinc-500">
             <p>
-              I&apos;m a software engineer with experience building and
-              maintaining enterprise applications using C#, .NET, ASP.NET,
-              SQL, and modern JavaScript frameworks.
+              {profile?.intro}
             </p>
 
             <p>
-              At MRI Software, I work on legacy modernization, application
-              performance, bug resolution, and maintaining existing .NET
-              systems. My experience also includes migrating legacy ExtJS
-              functionality to Kendo UI and working with Oracle databases.
+              I work primarily with enterprise .NET applications, legacy
+              modernization, backend systems, databases, and cloud
+              infrastructure. I also build full-stack applications when the
+              problem calls for it.
             </p>
 
             <p>
-              Outside enterprise software, I enjoy building full-stack
-              systems, experimenting with cloud infrastructure, and
-              understanding how applications work from the database to the
-              deployment layer.
-            </p>
-
-            <p>
-              Currently pursuing a{" "}
-              <span className="text-zinc-200">
-                Master&apos;s in Applied Computer Science
-              </span>{" "}
-              at Dalhousie University.
+              Currently pursuing a Master of Applied Computer Science at
+              Dalhousie University while continuing to build and explore
+              software outside of work.
             </p>
           </div>
 
-          <div>
-            <div className="mb-8 flex items-center justify-between border-b border-white/10 pb-4">
-              <span className="font-mono text-xs uppercase tracking-[0.2em] text-zinc-600">
-                Technology
-              </span>
+          <div className="border-t border-white/10">
+            {groupedSkills.map(({ category, skills }) => (
+              <div
+                key={category}
+                className="grid grid-cols-[150px_1fr] gap-6 border-b border-white/10 py-5"
+              >
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-600">
+                  {category}
+                </p>
 
-              <span className="font-mono text-xs text-zinc-700">
-                {profile.skills.length.toString().padStart(2, "0")} tools
-              </span>
-            </div>
-
-            <div className="divide-y divide-white/5">
-              {skillGroups.map((group) => (
-                <div
-                  key={group.label}
-                  className="grid gap-4 py-5 sm:grid-cols-[150px_1fr]"
-                >
-                  <span className="font-mono text-xs uppercase tracking-wider text-zinc-600">
-                    {group.label}
-                  </span>
-
-                  <div className="flex flex-wrap gap-x-5 gap-y-2">
-                    {group.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="text-sm text-zinc-400"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                  {skills.map((skill) => (
+                    <span
+                      key={skill.id}
+                      className="text-sm text-zinc-500"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
 
+        <div className="mt-16 grid border-y border-white/10 sm:grid-cols-3">
+          <div className="border-b border-white/10 py-5 sm:border-b-0 sm:border-r sm:pr-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
+              Focus
+            </p>
+            <p className="mt-2 text-sm text-zinc-400">
+              Backend · Cloud · Systems
+            </p>
+          </div>
 
+          <div className="border-b border-white/10 py-5 sm:border-b-0 sm:border-r sm:px-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
+              Education
+            </p>
+            <p className="mt-2 text-sm text-zinc-400">
+              {profile?.location}
+            </p>
+          </div>
+
+          <div className="py-5 sm:pl-8">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-700">
+              Currently
+            </p>
+            <p className="mt-2 text-sm text-zinc-400">
+              Building & learning
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
